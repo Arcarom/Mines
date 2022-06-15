@@ -1,18 +1,31 @@
 import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+
+import Flag from './Flag';
 import Params from '../params';
+import Mine from './Mine';
 
 export default props => {
-  const {mined, opened, nearMines} = props;
+  const {mined, opened, nearMines, exploded, flagged} = props;
   /*destructuring = tirar de dentro de um objeto
   não "tirar = destruir" mas de ler o atributo de
   dentro de um objeto*/
 
   const styleField = [styles.field];
+
   if (opened) {
     styleField.push(styles.opened);
   }
-  if (styleField.length === 1) {
+
+  if (exploded) {
+    styleField.push(styles.exploded);
+  }
+
+  if (flagged) {
+    styleField.push(styles.flagged);
+  }
+
+  if (!opened && !exploded) {
     styleField.push(styles.regular);
   }
 
@@ -38,6 +51,8 @@ export default props => {
       ) : (
         false
       )}
+      {mined && opened ? <Mine /> : false}
+      {flagged && !opened ? <Flag /> : false}
     </View>
   );
 };
@@ -54,6 +69,10 @@ const styles = StyleSheet.create({
     borderTopColor: '#CCC',
     borderRightColor: '#333',
     borderBottomColor: '#333',
+  },
+  exploded: {
+    backgroundColor: 'red',
+    borderColor: 'red',
   },
   opened: {
     backgroundColor: '#999',
