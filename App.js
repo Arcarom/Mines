@@ -1,42 +1,57 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
-import Field from './src/components/Field';
+
 import Params from './src/params';
+import MineField from './src/components/MineField';
+import {createMinedBoard} from './src/functions';
 
-const App = () => {
-  return (
-    <View style={style.container}>
-      <Text style={style.welcome}> Iniciando o Mines</Text>
-      <Text style={style.introductions}>
-        {' '}
-        Tamanho da grade:
-        {Params.getRowsAmount()}x{Params.getColumnsAmount()}
-      </Text>
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = this.createState();
+  }
 
-      <Field />
-      <Field opened />
-      <Field opened nearMines={1} />
-      <Field opened nearMines={2} />
-      <Field opened nearMines={3} />
-      <Field opened nearMines={4} />
-      <Field opened nearMines={5} />
-      <Field opened nearMines={6} />
-      <Field mined />
-      <Field mined opened />
-      <Field mined opened exploded />
-      <Field flagged />
-      <Field flagged opened />
-    </View>
-  );
-};
+  minesAmount = () => {
+    const cols = Params.getColumnsAmount();
+    const rows = Params.getRowsAmount();
+    return Math.ceil(cols * rows * Params.difficultLevel);
+  };
 
-export default App;
+  createState = () => {
+    const cols = Params.getColumnsAmount();
+    const rows = Params.getRowsAmount();
+
+    return {
+      board: createMinedBoard(rows, cols, this.minesAmount()),
+    };
+  };
+
+  render() {
+    return (
+      <View style={style.container}>
+        <Text style={style.welcome}> Iniciando o Mines</Text>
+        <Text style={style.introductions}>
+          {' '}
+          Tamanho da grade:
+          {Params.getRowsAmount()}x{Params.getColumnsAmount()}
+        </Text>
+        <View style={style.board}>
+          <MineField board={this.state.board} />
+        </View>
+      </View>
+    );
+  }
+}
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  board: {
+    alignItems: 'center',
+    backgroundColor: '#AAA',
   },
 });
